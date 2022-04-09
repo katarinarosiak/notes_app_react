@@ -4,8 +4,6 @@ import Footer from './components/Footer'
 import noteService from './services/notes'
 
 
-
-
 const App = (props) => {
 	const [ notes, setNotes ] = useState([])
 	const [ newNote, setNewNote ] = useState('a new note...')
@@ -43,6 +41,7 @@ const App = (props) => {
 		noteService 
 			.remove(id)
 			.then(() => {
+				console.log(id);
 				const newNotes = notes.filter(note => note.id !== id)
 				setNotes(newNotes)
 			})
@@ -54,11 +53,13 @@ const App = (props) => {
   }
 
 	const toggleImportanceOf = id => {
+
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
 
     noteService
-      .update(changedNote).then(returnedNote => {
+      .update(id, changedNote)
+			.then(returnedNote => {
         setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
       .catch(error => {
@@ -96,7 +97,7 @@ const App = (props) => {
 							note={note}
 							toggleImportance={() => toggleImportanceOf(note.id)}
 							deleteNote={(event) => deleteNote(event, note.id)}
-							 />
+							 /> 
         )}
       </ul>
 			<form onSubmit={addNote}>
@@ -111,3 +112,4 @@ const App = (props) => {
 }
 
 export default App;
+
